@@ -76,7 +76,7 @@
 					<td><?php echo number_format($value['sales_price']) ?></td>
 					<td><?php echo number_format($value['discount']) ?></td>
 					
-					<td style="text-align: right;"><?php echo number_format($value['subtotal']) ?></td>
+					<td style="text-align: right;"><?php echo number_format($value['total']) ?></td>
 				</tr>
 				<?php } ?>
 			</table>
@@ -180,6 +180,11 @@
 				</tr>
 				<?php foreach ($query2->result_array() as $key2 => $value2) {
 				?>
+				<tr>
+					<td colspan="3">
+						<div style="margin:10px 0px; width:70%; border: 1px dotted grey; border-right: none; border-left: none; border-bottom: none;"></div>
+					</td>
+				</tr>
 				<tr>
 					<td>Paket</td>
 					<td> : </td>
