@@ -143,6 +143,7 @@
       					<th>Jumlah</th>
       					<th>Satuan</th>
       					<th>Harga/paket</th>
+      					<th>Discount</th>
       					<th>Subtotal</th>
       					<th width="130px">Action</th>
       				</thead>
@@ -188,7 +189,16 @@
       				</div>
       			</div>
       			<hr>
-      			<button class="btn btn-primary btn-sm" id="saveOrder1"><span class="fa fa-print"></span> Simpan + Print</button>
+      			<div class="dropdown" style="float:left; margin-right:5px;">
+					  <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    <span class="fa fa-print"></span> Simpan + Print
+					  </button>
+					  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					    <a class="dropdown-item" href="#" id="saveOrder1A">Invoice</a>
+					    <a class="dropdown-item" href="#" id="saveOrder1B">Form</a>
+					    <a class="dropdown-item" href="#" id="saveOrder1C">Print All</a>
+					  </div>
+					</div>
       			<button class="btn btn-primary btn-sm" id="saveOrder2"><span class="fa fa-save"></span> Simpan</button>
       			<button class="btn btn-primary btn-sm" id="saveOrder3"><span class="fa fa-save"></span> Simpan & Posting</button>
       		</div>
@@ -325,6 +335,11 @@ Tempatkan semua modal disini
 		    			<td><input type="number" name="sales_price" id="sales_price" class="form-control form-control-sm"></td>
 		    		</tr>
 		    		<tr>
+		    			<td>Discount</td>
+		    			<td> : </td>
+		    			<td><input type="number" name="discount" id="discount" class="form-control form-control-sm"></td>
+		    		</tr>
+		    		<tr>
 		    			<td>Qty Order</td>
 		    			<td> : </td>
 		    			<td><input type="number" name="order_qty" id="order_qty" class="form-control form-control-sm"></td>
@@ -394,6 +409,11 @@ Tempatkan semua modal disini
 		    			<td>Harga/Paket</td>
 		    			<td> : </td>
 		    			<td><input type="number" name="sales_price" id="sales_price_update" class="form-control form-control-sm"></td>
+		    		</tr>
+		    		<tr>
+		    			<td>Discount</td>
+		    			<td> : </td>
+		    			<td><input type="number" name="discount" id="discount_update" class="form-control form-control-sm"></td>
 		    		</tr>
 		    		<tr>
 		    			<td>Jumlah Kambing</td>
@@ -708,6 +728,7 @@ $(document).on("click",".btn-cust", function(){
 			if (dataObj.status == 'ok') {
 				$("#masakan").val(dataObj.masakan);
 				$("#sales_price").val(dataObj.sales_price);
+				$("#discount").val(dataObj.discount);
 				$("#order_qty").val(1);
 			}
     	})
@@ -726,6 +747,7 @@ $(document).on("click",".btn-cust", function(){
 
 				$("#masakan_update").val(dataObj.masakan);
 				$("#sales_price_update").val(dataObj.sales_price);
+				$("#discount_update").val(dataObj.discount);
 				$("#order_qty_update").val(1);
 			}
     	})
@@ -930,6 +952,7 @@ $(document).on("click",".btn-cust", function(){
 
 	    			$("#product_id_update" + " option[value="+data.product_id+"]").attr("selected","")
 					$("#sales_price_update").val(data.sales_price)
+					$("#discount_update").val(data.discount)
 					$("#order_qty_update").val(data.order_qty)
 					$("#masakan_update").val(data.masakan)
 					
@@ -1091,17 +1114,35 @@ $(document).on("click",".btn-cust", function(){
 
     }
 
-    $(document).on("click", "#saveOrder1", function(){
-
-
+    $(document).on("click", "#saveOrder1A", function(){
 
     	saveOrder(function(order_id){
-    		window.open('<?php echo admin_url() ?>'+'pos/print_order/'+order_id,'new_blank');
+    		window.open('<?php echo admin_url() ?>'+'pos/print_order/'+order_id+'?target=invoice','_blank');
 	    	document.location = '<?php echo admin_url() ?>' + 'pos';
     	},function(){
-    		btnLoader("#saveOrder1");
+    		btnLoader("#saveOrder1A");
     	});
     })
+
+    $(document).on("click", "#saveOrder1B", function(){
+
+    	saveOrder(function(order_id){
+    		window.open('<?php echo admin_url() ?>'+'pos/print_order/'+order_id+'?target=form','_blank');
+	    	document.location = '<?php echo admin_url() ?>' + 'pos';
+    	},function(){
+    		btnLoader("#saveOrder1B");
+    	});
+    })
+    $(document).on("click", "#saveOrder1C", function(){
+
+    	saveOrder(function(order_id){
+    		window.open('<?php echo admin_url() ?>'+'pos/print_order/'+order_id+'?target=all','_blank');
+	    	document.location = '<?php echo admin_url() ?>' + 'pos';
+    	},function(){
+    		btnLoader("#saveOrder1C");
+    	});
+    })
+
     $(document).on("click", "#saveOrder2", function(){
     	saveOrder(function(){
 	    	document.location = '<?php echo admin_url() ?>' + 'pos';

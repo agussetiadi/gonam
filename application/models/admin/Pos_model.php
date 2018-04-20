@@ -76,6 +76,23 @@ class Pos_model extends CI_model
 		return json_encode($json);
 	}
 
+	public function q_order($requestData){
+	    if (!empty($requestData['length'])) {
+	    	$this->db->limit($requestData['length'],$requestData['start']);
+	    }
+	    if (!empty($requestData['search'])) {
+	    	$this->db->like("customer_name",$requestData['search']);
+	    }
+	    if (!empty($requestData['sort'])) {
+	    	$this->db->order_by($requestData['field'],$requestData['sort']);
+	    }
+
+	    $arr = $requestData['where'];
+		$this->db->join("pos_customer", "pos_customer.customer_id = pos_order.customer_id", "LEFT");
+	    $d = $this->db->get_where("pos_order", $arr);
+	    return $d;
+	}
+
 	public function render_order(){
 
 		$requestData 	= $_POST;
@@ -107,25 +124,57 @@ class Pos_model extends CI_model
 		
 		if( !empty($requestData['search']) ) {
 
+			$params1 = [
+				'length' => $requestData['length'],
+				'start' => $requestData['start'],
+				'search' => $requestData['search'],
+				'sort' => $requestData['sort'],
+				'field' => $requestData['field'],
+				'where' => $arr
+			];
+
+			$params2 = [
+				'search' => $requestData['search'],
+				'where' => $arr
+			];
+
+			$query = $this->q_order($params1)->result_array();
+			$totalFiltered = $this->q_order($params2)->num_rows();
+
+
 		    // if there is a search parameter
 
-		    $this->db->join("pos_customer", "pos_customer.customer_id = pos_order.customer_id", "LEFT");
+		    /*$this->db->join("pos_customer", "pos_customer.customer_id = pos_order.customer_id", "LEFT");
 		    $this->db->order_by($requestData['field'],$requestData['sort']);
 		    $this->db->limit($requestData['length'],$requestData['start']);
 		    $this->db->like("customer_name",$requestData['search']);
-		    //$this->db->or_like("no_trx",$requestData['search']);
 		    $d = $this->db->get_where("pos_order", $arr);
-		    $query = $d->result_array();
+		    $query = $d->result_array();*/
 
 
-		    $this->db->join("pos_customer", "pos_customer.customer_id = pos_order.customer_id", "LEFT");
+		    /*$this->db->join("pos_customer", "pos_customer.customer_id = pos_order.customer_id", "LEFT");
 		    $this->db->like("customer_name",$requestData['search']);
-		    //$this->db->or_like("no_trx",$requestData['search']);
-		   	$totalFiltered = $this->db->get_where("pos_order", $arr)->num_rows();
+		   	$totalFiltered = $this->db->get_where("pos_order", $arr)->num_rows();*/
 		    
 		} 
 		else{
-			$this->db->join("pos_customer", "pos_customer.customer_id = pos_order.customer_id", "LEFT");
+
+			$params1 = [
+				'length' => $requestData['length'],
+				'start' => $requestData['start'],
+				'sort' => $requestData['sort'],
+				'field' => $requestData['field'],
+				'where' => $arr
+			];
+
+			$params2 = [
+				'where' => $arr
+			];
+
+			$query = $this->q_order($params1)->result_array();
+			$totalFiltered = $this->q_order($params2)->num_rows();
+
+			/*$this->db->join("pos_customer", "pos_customer.customer_id = pos_order.customer_id", "LEFT");
 			$this->db->order_by($requestData['field'],$requestData['sort']);
 			$this->db->limit($requestData['length'],$requestData['start']);
 
@@ -133,7 +182,7 @@ class Pos_model extends CI_model
 			$query = $ex->result_array();
 
 			$this->db->join("pos_customer", "pos_customer.customer_id = pos_order.customer_id", "LEFT");
-			$totalFiltered = $this->db->get_where("pos_order", $arr)->num_rows();	
+			$totalFiltered = $this->db->get_where("pos_order", $arr)->num_rows();*/	
 		}
 
 
@@ -150,7 +199,17 @@ class Pos_model extends CI_model
 			}
 
 			$btn = '<a href="'.admin_url()."pos/order/".$value['order_id'].'"><button class="btn btn-sm btn-info"><span class="fa fa-pencil"></span></button></a> ';
-			$btn .= '<a target="_blank" href="'.admin_url()."pos/print_order/".$value['order_id'].'"><button class="btn btn-sm btn-primary"><span class="fa fa-print"></span></button></a> ';
+			$btn .= '<div class="dropdown" style="float:left; margin-right:5px;">
+					  <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    <span class="fa fa-print"></span>
+					  </button>
+					  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					    <a target="_blank" class="dropdown-item" href="'.admin_url()."pos/print_order/".$value['order_id'].'?target=invoice">Invoice</a>
+					    <a target="_blank" class="dropdown-item" href="'.admin_url()."pos/print_order/".$value['order_id'].'?target=form">Form</a>
+					    <a target="_blank" class="dropdown-item" href="'.admin_url()."pos/print_order/".$value['order_id'].'?target=all">Print All</a>
+					  </div>
+					</div>';
+
 			$btn .= '<a class="btnDeleteOrder" href="'.admin_url()."pos/delete_order/".$value['order_id'].'"><button class="btn btn-sm btn-danger"><span class="fa fa-trash"></button></a>';
 
 			$nested[] = $value['no_trx'];

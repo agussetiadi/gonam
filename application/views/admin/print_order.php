@@ -26,6 +26,9 @@
 		<div class="row">
 		<div class="row">
 		<div class="row">
+		<?php 
+		if ($this->input->get('target') == 'invoice' || $this->input->get('target') == 'all') {
+		?>
 		<div class="col-md-8" style="border: 0px solid black; padding: 20px; margin-bottom: 50px;">
 			<table style="width: 100%" id="table1">
 				<tr>
@@ -60,6 +63,7 @@
 				<th>Qty</th>
 				<th>Satuan</th>
 				<th>Price</th>
+				<th>Discount</th>
 				<th width="20%" style="text-align: right;">Subtotal</th>
 				<?php foreach ($query2->result_array() as $key => $value) {
 					
@@ -70,6 +74,7 @@
 					<td><?php echo $value['order_qty'] ?></td>
 					<td><?php echo $value['unit_name'] ?></td>
 					<td><?php echo number_format($value['sales_price']) ?></td>
+					<td><?php echo number_format($value['discount']) ?></td>
 					
 					<td style="text-align: right;"><?php echo number_format($value['subtotal']) ?></td>
 				</tr>
@@ -87,7 +92,7 @@
 						Dibayar : <?php echo "Rp.".number_format($query1['total_paid']) ?><br>
 						Sisa : <?php 
 							$sisa = $query1['grand_total'] - $query1['total_paid'];
-							echo number_format($sisa);
+							echo 'Rp. '.number_format($sisa);
 							 ?>
 
 						</p>
@@ -96,12 +101,18 @@
 				</tr>
 
 			</table>
+			<?php 
+			if ($this->input->get('target') == 'all') { ?>
+			<div style="border: dotted black; border-width: 0px 0px 2px 0px; margin-top: 20px;"></div>
+			<?php } ?>
 		</div>
 
-		<div class="col-md-8">
-			<div style="height: 1px; width: 100%; background-color: black; border : 1px solid black;"></div>
-		</div>
+		<?php } ?>
+		
 
+		<?php 
+		if ($this->input->get('target') == 'form' || $this->input->get('target') == 'all') {
+		?>
 		<div class="col-md-8" style="border: 0px solid black; padding: 20px; margin-top: 30px;">
 			<table style="width: 100%" id="table1">
 				<tr>
@@ -237,6 +248,8 @@
 			
 
 		</div>
+
+		<?php } ?>
 		</div>
 		</div>
 

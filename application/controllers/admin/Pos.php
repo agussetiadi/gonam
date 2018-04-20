@@ -77,6 +77,7 @@ class Pos extends CI_controller
 		$masakan 		= $this->input->post("masakan");
 		$order_qty 		= $this->input->post("order_qty");
 		$sales_price 	= $this->input->post("sales_price");
+		$discount 		= $this->input->post("discount");
 		
 		$nama_anak 		= $this->input->post("nama_anak");
 		$tanggal_lahir 	= $this->input->post("tanggal_lahir");
@@ -95,11 +96,11 @@ class Pos extends CI_controller
 		
 
 
-		
+		$total_discount = $discount * $order_qty;
 		$sales_hpp = $getProduct['product_hpp'];
-		$discount = 0;
-		$subtotal = $order_qty * ($sales_price - $discount);
-		$total = $subtotal;
+
+		$subtotal = $order_qty * $sales_price;
+		$total = $order_qty * ($sales_price - $discount);
 
 		$product_hits = $getProduct['product_hits'] + 1;
 
@@ -127,8 +128,9 @@ class Pos extends CI_controller
 							"masakan"=>$masakan,
 							"order_qty"=>$order_qty,
 							"sales_price"=>$sales_price,
-							"sales_hpp"=>$sales_hpp,
 							"discount"=>$discount,
+							"discount_total"=>$total_discount,
+							"sales_hpp"=>$sales_hpp,
 							"subtotal"=>$subtotal,
 							"total"=>$total,
 							"nama_anak"=>$nama_anak,
@@ -157,6 +159,7 @@ class Pos extends CI_controller
 		$masakan 		= $this->input->post("masakan");
 		$order_qty 		= $this->input->post("order_qty");
 		$sales_price 	= $this->input->post("sales_price");
+		$discount 		= $this->input->post("discount");
 		$nama_anak 		= $this->input->post("nama_anak");
 		$tanggal_lahir 	= $this->input->post("tanggal_lahir");
 		$nama_ortu 		= $this->input->post("nama_ortu");
@@ -169,14 +172,17 @@ class Pos extends CI_controller
 		
 		$sales_hpp = $getProduct['product_hpp'];
 		
+		$total_discount = $discount * $order_qty;
 		$subtotal = $order_qty * $sales_price;
-		$total = $subtotal;
+		$total = $order_qty * $sales_price - $total_discount;
 
 
 		$arrayDetail = array("product_id"=>$product_id,
 							"masakan"=>$masakan,
 							"order_qty"=>$order_qty,
 							"sales_price"=>$sales_price,
+							"discount"=>$discount,
+							"discount_total"=>$total_discount,
 							"sales_hpp"=>$sales_hpp,
 							"subtotal"=>$subtotal,
 							"total"=>$total,
@@ -212,7 +218,11 @@ class Pos extends CI_controller
 	public function select_product(){
 		$product_id = $this->input->post("product_id");
 		$query = $this->db->get_where("pos_product", array('product_id' => $product_id))->row_array();
-		$jsonData = array("status" => 'ok', 'masakan' => $query['product_menu'],'sales_price' => $query['product_price']);
+		$jsonData = array(
+			"status" => 'ok', 
+			'masakan' => $query['product_menu'],
+			'sales_price' => $query['product_price'],
+			'discount' => 0);
 		echo json_encode($jsonData);
 	}
 	
@@ -237,7 +247,8 @@ class Pos extends CI_controller
 			$nested[] = $value['order_qty'];
 			$nested[] = $value['unit_name'];
 			$nested[] = number_format($value['sales_price']);
-			$nested[] = number_format($value['subtotal']);
+			$nested[] = number_format($value['discount']);
+			$nested[] = number_format($value['total']);
 			$nested[] = $btn;
 			
 			$data[] = $nested;
