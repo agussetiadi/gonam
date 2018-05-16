@@ -25,19 +25,14 @@ class Product extends CI_controller
 		$category_id = $this->input->post("category_id");
 		$key_word = $this->input->post("key_word");
 
+		$this->db->where('is_publish',1);
 		$this->db->where('is_deleted',0);
-		$this->db->where('category_id',$category_id[0]);
+		$this->db->where_in('category_id',$category_id);
 
 		if (!empty($key_word)) {
 			$this->db->like('product_name',$key_word);
 		}
-
-		if (count($category_id > 1)) {
-			for ($i= 1; $i < count($category_id); $i++) { 
-				$this->db->or_where('category_id',$category_id[$i]);
-			}
-		}
-
+		
 		if ($sort == "popular") {
 			$this->db->order_by('product_hits','DESC');
 		}
@@ -57,6 +52,7 @@ class Product extends CI_controller
 					'product_picture' => image_exists("assets/img/post_img/",$value['product_picture']),
 					'product_info' => $value['product_info'],
 					'product_price' => $value['product_price'],
+					'is_publish' => $value['is_publish'],
 				);
 		}
 
