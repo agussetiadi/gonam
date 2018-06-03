@@ -266,7 +266,7 @@ class Blog extends CI_controller
 		Get Sisipan Harga OPEN
 		*/
 
-		$query_sisip1 = $this->db->get_where("pos_product",array("category_id"=>$sisip_hrg,"is_deleted"=>0));
+		$query_sisip1 = $this->db->get_where("pos_product",array("category_id"=>$sisip_hrg,"is_deleted"=>0, 'is_publish' => 1));
 		$data['query_sisip'] = $query_sisip1->result_array();
 
 
