@@ -19,7 +19,7 @@ class Fbconfig
 		$helper = $fb->getRedirectLoginHelper();
 
 		$permissions = ['email']; // Optional permissions
-		$loginUrl = $helper->getLoginUrl('http://localhost:8080/gonam/login/facebookAuth', $permissions);	
+		$loginUrl = $helper->getLoginUrl('http://gonam/login/facebookAuth', $permissions);	
 		return $loginUrl;
 	}
 }

@@ -49,6 +49,7 @@
         <div class="form-group">
           <label>Sisipkan Daftar Harga</label><br>
           <select name="category_id" class="custom-select" id="category_id">
+            <option value="0">- Tidak -</option>
             <?php foreach ($query_category as $key => $value) { ?>
             <option value="<?php echo $value['category_id'] ?>"><?php echo $value['category_name'] ?></option>
             <?php } ?>
